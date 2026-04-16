@@ -1,12 +1,13 @@
 package UserInterface;
 
-import javax.swing.JFrame;
+import javax.swing.*;
+import java.awt.*;
 
 public class MainFrame extends JFrame {
 
     public MainFrame() {
 
-        setTitle("Analisador de Treliças");
+        setTitle("Editor de Treliças");
 
         setSize(1000, 700);
 
@@ -14,7 +15,15 @@ public class MainFrame extends JFrame {
 
         setLocationRelativeTo(null);
 
-        add(new PainelDesenho());
+        setLayout(new BorderLayout());
+
+        PainelDesenho painel = new PainelDesenho();
+
+        BarraFerramentas barra = new BarraFerramentas(painel);
+
+        add(barra, BorderLayout.NORTH);
+        add(painel, BorderLayout.CENTER);
 
     }
+
 }

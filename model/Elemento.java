@@ -2,6 +2,8 @@ package model;
 
 public class Elemento {
 
+    private static int contador = 0;
+
     private int id;
 
     private No noInicial;
@@ -9,8 +11,8 @@ public class Elemento {
 
     private double forcaInterna;
 
-    public Elemento(int id, No noInicial, No noFinal) {
-        this.id = id;
+    public Elemento(No noInicial, No noFinal) {
+        this.id = contador++;
         this.noInicial = noInicial;
         this.noFinal = noFinal;
     }

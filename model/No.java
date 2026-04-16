@@ -5,6 +5,8 @@ import java.util.List;
 
 public class No {
 
+    private static int contador = 0;
+
     private int id;
     private double x;
     private double y;
@@ -12,8 +14,8 @@ public class No {
     private List<Forca> forcas;
     private Vinculo vinculo;
 
-    public No(int id, double x, double y) {
-        this.id = id;
+    public No(double x, double y) {
+        this.id = contador++;
         this.x = x;
         this.y = y;
         this.forcas = new ArrayList<>();

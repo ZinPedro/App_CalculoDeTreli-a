@@ -2,15 +2,22 @@ package model;
 
 import enums.TipoVinculo;
 
+
 public class Vinculo {
 
+    private No no;
     private TipoVinculo tipo;
-
+    
     private double reacaoX;
     private double reacaoY;
 
-    public Vinculo(TipoVinculo tipo) {
+    public Vinculo(No no, TipoVinculo tipo) {
+        this.no = no;
         this.tipo = tipo;
+    }
+
+    public No getNo() {
+        return no;
     }
 
     public TipoVinculo getTipo() {
