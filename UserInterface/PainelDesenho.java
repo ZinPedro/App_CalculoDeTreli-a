@@ -206,7 +206,13 @@ public class PainelDesenho extends JPanel {
         int gridX = Math.round((float) mouseX / tamanhoGrid) * tamanhoGrid;
         int gridY = Math.round((float) mouseY / tamanhoGrid) * tamanhoGrid;
 
-        g.setColor(Color.RED);
+        No no = encontrarNoProximo(gridX, gridY);
+
+        if (no != null) {
+            g.setColor(Color.GREEN);
+        } else {
+            g.setColor(Color.RED);
+        }
 
         int r = 6;
 
