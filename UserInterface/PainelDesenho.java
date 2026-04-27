@@ -67,6 +67,10 @@ public class PainelDesenho extends JPanel {
                     case CRIAR_VINCULO:
                         criarVinculo(x, y);
                         break;
+
+                    case APAGAR_VINCULO:
+                        apagarVinculo(x, y);
+                        break;
                 }
 
                 repaint();
@@ -401,6 +405,27 @@ public class PainelDesenho extends JPanel {
 
         }
 
+    }
+
+    private void apagarVinculo(int x, int y) {
+        No no = encontrarNoProximo(x, y);
+
+        if(no == null) return;
+
+        Vinculo alvo = null;
+
+        for(Vinculo v : trelica.getVinculos()) {
+            if(v.getNo() == no){
+                alvo = v;
+                break;
+            }
+        }
+
+        if (no != null) {
+
+            trelica.removerVinculo(alvo);
+
+        }
     }
 
     private No encontrarNoProximo(double x, double y) {

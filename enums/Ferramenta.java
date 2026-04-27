@@ -6,6 +6,7 @@ public enum Ferramenta {
     DESENHAR_NO,
     APAGAR_NO,
     APAGAR_BARRA,
-    CRIAR_VINCULO
+    CRIAR_VINCULO,
+    APAGAR_VINCULO
 
 }

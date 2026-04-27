@@ -30,6 +30,8 @@ public class BarraFerramentas extends JPanel {
         criarBotaoVinculo();
         criarMenuVinculos();
 
+        criarBotao(Ferramenta.APAGAR_VINCULO, "Apagar vinculo");
+
         selecionarFerramenta(Ferramenta.DESENHAR_BARRA);
     }
 

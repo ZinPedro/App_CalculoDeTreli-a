@@ -20,10 +20,14 @@ public class Trelica {
 
     public void removerNo(No no) {
 
-        nos.remove(no);
-
+        // remover barras conectadas ao nó
         elementos.removeIf(e -> e.getNoInicial() == no || e.getNoFinal() == no);
 
+        // remover vínculo associado ao nó
+        vinculos.removeIf(v -> v.getNo() == no);
+
+        // remover o nó
+        nos.remove(no);
     }
 
     public void adicionarElemento(Elemento elemento) {
