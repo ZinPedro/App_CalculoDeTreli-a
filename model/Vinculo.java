@@ -1,8 +1,6 @@
 package model;
 
 import enums.TipoVinculo;
-
-
 public class Vinculo {
 
     private No no;
@@ -16,6 +14,7 @@ public class Vinculo {
         this.tipo = tipo;
     }
 
+    //Getters
     public No getNo() {
         return no;
     }
@@ -32,6 +31,7 @@ public class Vinculo {
         return reacaoY;
     }
 
+    //Setters
     public void setReacaoX(double reacaoX) {
         this.reacaoX = reacaoX;
     }

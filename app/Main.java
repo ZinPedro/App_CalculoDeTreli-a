@@ -1,6 +1,4 @@
-
 import UserInterface.MainFrame;
-
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 

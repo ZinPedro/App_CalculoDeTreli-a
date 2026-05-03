@@ -42,7 +42,7 @@ public class Elemento {
     }
 
     public double getSen() {
-        return (noFinal.getY() - noInicial.getY()) / getComprimento();
+        return -(noFinal.getY() - noInicial.getY()) / getComprimento(); //Invertido porque Y cresce para cima
     }
 
     public double getForcaInterna() {

@@ -11,16 +11,17 @@ public class No {
     private double x;
     private double y;
 
-    private List<Forca> forcas;
-    private Vinculo vinculo;
+    //Forças
+    private double fx = 0;
+    private double fy = 0;
 
     public No(double x, double y) {
         this.id = contador++;
         this.x = x;
         this.y = y;
-        this.forcas = new ArrayList<>();
     }
 
+    //Getters
     public int getId() {
         return id;
     }
@@ -33,20 +34,29 @@ public class No {
         return y;
     }
 
-    public List<Forca> getForcas() {
-        return forcas;
+    public double getFx(){
+        return fx;
     }
 
-    public void adicionarForca(Forca forca) {
-        forcas.add(forca);
+    public double getFy(){
+        return fy;
     }
 
-    public Vinculo getVinculo() {
-        return vinculo;
+    //Setters
+    public void setFx(double fx){
+        this.fx = fx;
     }
 
-    public void setVinculo(Vinculo vinculo) {
-        this.vinculo = vinculo;
+    public void setFy(double fy){
+        this.fy = fy;
+    }    
+
+    public List<Forca> getForcas(){
+        List<Forca> lista = new ArrayList<>();
+        if(fx != 0 || fy != 0){
+            lista.add(new Forca(fx,fy));
+        }
+        return lista;
     }
 
     @Override

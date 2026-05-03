@@ -6,40 +6,51 @@ public class SistemaLinearSolver {
 
         int n = b.length;
 
-        double[][] matriz = new double[n][n + 1];
+        double[][] m = new double[n][n + 1];
 
         // montar matriz aumentada
         for (int i = 0; i < n; i++) {
-
-            for (int j = 0; j < n; j++) {
-                matriz[i][j] = A[i][j];
-            }
-
-            matriz[i][n] = b[i];
+            for (int j = 0; j < n; j++) 
+                m[i][j] = A[i][j];
+            m[i][n] = b[i];
         }
 
-        // eliminação de Gauss
+        // eliminação de Gauss-Jordan com pivotamento parcial
         for (int i = 0; i < n; i++) {
 
-            double pivô = matriz[i][i];
-
-            for (int j = i; j < n + 1; j++) {
-                matriz[i][j] /= pivô;
-            }
-
-            for (int k = 0; k < n; k++) {
-
-                if (k != i) {
-
-                    double fator = matriz[k][i];
-
-                    for (int j = i; j < n + 1; j++) {
-                        matriz[k][j] -= fator * matriz[i][j];
-                    }
-
+            //pivô máximo coluna 1
+            int maxRow = i;
+            for(int k = i; k < n; k++){
+                if(Math.abs(m[k][i]) > Math.abs(m[maxRow][i])){
+                    maxRow = k;
                 }
-
             }
+
+            //trocar linha i com linha MaxRow
+            double [] tmp = m[i];
+            m[i] = m[maxRow];
+            m[maxRow] = tmp;
+
+            double pivo = m[i][i];
+            if(Math.abs(pivo) < 1e-12){
+                throw new ArithmeticException("Matriz singular — pivô nulo na linha " + i);
+            }
+
+            //normalizar linha 1
+            for(int j = i; j <= n; j++ ){
+                m[i][j] /= pivo;
+            }
+
+            //Eliminar coluna 1em todas as outras linhas
+            for(int k = 0; k < n; k++){
+                if(k != i ){
+                    double fator = m[k][i];
+                    for(int j = i; j <= n; j++){
+                        m[k][j] -= fator * m[i][j];
+                    }
+                }
+            }
+
 
         }
 
@@ -47,7 +58,7 @@ public class SistemaLinearSolver {
         double[] x = new double[n];
 
         for (int i = 0; i < n; i++) {
-            x[i] = matriz[i][n];
+            x[i] = m[i][n];
         }
 
         return x;
