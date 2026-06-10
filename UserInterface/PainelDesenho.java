@@ -178,7 +178,6 @@ public class PainelDesenho extends JPanel {
         // Verificar cruzamento
         Elemento novaBarra = new Elemento(noSelecionado, no);
         List<Elemento> copia = new ArrayList<>(todosElementos);
-        boolean cancelar = false;
         for (Elemento e : copia) {
             if (compartilhaNo(e, noSelecionado, no)) continue;
             Point p = intersecao(novaBarra, e);
@@ -320,8 +319,6 @@ public class PainelDesenho extends JPanel {
 
             boolean ehAtiva = (e == barraAtiva);
             double f = e.getForcaInterna();
-            boolean calculada = Math.abs(f) > 1e-9 || mostrarCores;
-
             Color cor;
             float espessura;
 
