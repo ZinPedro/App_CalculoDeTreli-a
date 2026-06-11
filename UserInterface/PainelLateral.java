@@ -105,7 +105,11 @@ public class PainelLateral extends JPanel {
         // Vínculo
         Vinculo v = buscarVinculo(noAtual);
         if (v != null) {
-            lblVinculo.setText("Vínculo: " + v.getTipo());
+            String tipo = String.valueOf(v.getTipo());
+            if (v.getTipo() == TipoVinculo.PINO_ANGULADO) {
+                tipo += String.format(" %.1f°", v.getAnguloGraus());
+            }
+            lblVinculo.setText("Vínculo: " + tipo);
             if (v.getReacaoX() != 0 || v.getReacaoY() != 0) {
                 lblReacoes.setText(String.format("<html>Rx = %.2f N<br>Ry = %.2f N</html>",
                     v.getReacaoX(), v.getReacaoY()));

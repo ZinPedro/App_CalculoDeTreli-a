@@ -68,6 +68,14 @@ public class BarraFerramentas extends JPanel {
 
         criarSep();
 
+        JButton btnLimpar = new JButton("Limpar");
+        estilizarBotaoAcao(btnLimpar, "Limpar toda a treliça 2D");
+        btnLimpar.setPreferredSize(new Dimension(78, 36));
+        btnLimpar.addActionListener(e -> confirmarLimpeza());
+        add(btnLimpar);
+
+        criarSep();
+
         //Calcular
         JButton btnCalc = new JButton("⚙ Calcular");
         btnCalc.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -136,20 +144,50 @@ public class BarraFerramentas extends JPanel {
     private void criarMenuVinculos() {
 
         JMenuItem pino = new JMenuItem("PINO(Rx + Ry)");
-        JMenuItem rolete = new JMenuItem("ROLETE( Ry)");
+        JMenuItem rolete = new JMenuItem("ROLETE vertical (Ry)");
+        JMenuItem roleteHorizontal = new JMenuItem("ROLETE horizontal (Rx)");
+        JMenuItem pinoAngulado = new JMenuItem("PINO angulado...");
 
         pino.addActionListener(e -> {
             painel.setTipoVinculo(enums.TipoVinculo.PINO);
+            painel.setAnguloVinculo(0);
             selecionarFerramenta(Ferramenta.CRIAR_VINCULO);
         });
 
         rolete.addActionListener(e -> {
             painel.setTipoVinculo(enums.TipoVinculo.ROLETE);
+            painel.setAnguloVinculo(0);
             selecionarFerramenta(Ferramenta.CRIAR_VINCULO);
         });
 
+        roleteHorizontal.addActionListener(e -> {
+            painel.setTipoVinculo(enums.TipoVinculo.ROLETE_HORIZONTAL);
+            painel.setAnguloVinculo(0);
+            selecionarFerramenta(Ferramenta.CRIAR_VINCULO);
+        });
+
+        pinoAngulado.addActionListener(e -> selecionarPinoAngulado());
+
         menuVinculo.add(pino);
         menuVinculo.add(rolete);
+        menuVinculo.add(roleteHorizontal);
+        menuVinculo.add(pinoAngulado);
+    }
+
+    private void selecionarPinoAngulado() {
+        String resposta = JOptionPane.showInputDialog(
+            this,
+            "Ângulo de sustentação em graus (0° = direita, 90° = cima):",
+            "45");
+        if (resposta == null || resposta.trim().isEmpty()) return;
+        try {
+            double angulo = Double.parseDouble(resposta.trim().replace(",", "."));
+            painel.setTipoVinculo(enums.TipoVinculo.PINO_ANGULADO);
+            painel.setAnguloVinculo(angulo);
+            selecionarFerramenta(Ferramenta.CRIAR_VINCULO);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Ângulo inválido.", "Vínculo angulado", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private void criarBotaoVinculo() {
@@ -157,7 +195,7 @@ public class BarraFerramentas extends JPanel {
         JButton b = new JButton("▲ Vínculo");
         b.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         b.setPreferredSize(new Dimension(95, 36));
-        b.setToolTipText("Adicionar vínculo: Pino (2 reações) ou Rolete (1 reação)");
+        b.setToolTipText("Adicionar vínculo: Pino, rolete vertical/horizontal ou vínculo angulado");
         b.setFocusPainted(false);
         b.setBorder(new LineBorder(new Color(190, 190, 200)));
         b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -180,7 +218,7 @@ public class BarraFerramentas extends JPanel {
             "<li><b>↖ Selecionar</b> — clique em um nó ou barra para ver detalhes no painel lateral</li>" +
             "<li><b>╱ Barra</b> — clique no 1º nó, depois no 2º. Se não houver nó na grade, ele é criado automaticamente</li>" +
             "<li><b>✕ Nó / ✕ Barra / ✕ Vínculo</b> — apaga o elemento clicado</li>" +
-            "<li><b>▲ Vínculo</b> — escolha Pino ou Rolete e clique em um nó</li>" +
+            "<li><b>▲ Vínculo</b> — escolha Pino, Rolete vertical, Rolete horizontal ou Pino angulado e clique em um nó</li>" +
             "<li><b>🎨 Cores</b> — após calcular, exibe barras em azul (tração) ou vermelho (compressão)</li>" +
             "<li><b>⚙ Calcular</b> — selecione um nó ou barra da treliça desejada, depois clique</li>" +
             "</ul>" +
@@ -198,7 +236,7 @@ public class BarraFerramentas extends JPanel {
             "<p>A treliça precisa satisfazer: <b>m + r = 2n</b></p>" +
             "<ul>" +
             "<li><b>m</b> = número de barras</li>" +
-            "<li><b>r</b> = número de reações (Pino = 2, Rolete = 1)</li>" +
+            "<li><b>r</b> = número de reações (Pino = 2; Rolete vertical/horizontal e Pino angulado = 1)</li>" +
             "<li><b>n</b> = número de nós</li>" +
             "</ul>" +
             "<p><b>Exemplo:</b> treliça simples com 3 nós (n=3), 3 barras (m=3), 1 pino + 1 rolete (r=3):<br>" +
@@ -218,7 +256,7 @@ public class BarraFerramentas extends JPanel {
             "<h3 style='color:#2a5a2a'>✅ Montagem recomendada</h3>" +
             "<ol>" +
             "<li>Desenhe as barras (os nós são criados automaticamente)</li>" +
-            "<li>Adicione os vínculos nos nós de apoio</li>" +
+            "<li>Adicione os vínculos nos nós de apoio. No Pino angulado, 0° aponta para direita e 90° para cima</li>" +
             "<li>Selecione os nós de carga e defina Fx/Fy no painel lateral</li>" +
             "<li>Selecione qualquer nó/barra da treliça com Selecionar</li>" +
             "<li>Clique em ⚙ Calcular</li>" +
@@ -235,5 +273,18 @@ public class BarraFerramentas extends JPanel {
 
         JOptionPane.showMessageDialog(painel, scroll,
             "Ajuda — Editor de Treliças", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private void confirmarLimpeza() {
+        int opcao = JOptionPane.showConfirmDialog(
+            painel,
+            "Limpar toda a treliça 2D?",
+            "Limpar",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+        if (opcao == JOptionPane.YES_OPTION) {
+            painel.limparTudo();
+        }
     }
 }
