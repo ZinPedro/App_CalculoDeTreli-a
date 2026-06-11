@@ -30,6 +30,7 @@ public class PainelDesenho extends JPanel {
     private Ferramenta  ferramenta      = Ferramenta.DESENHAR_BARRA;
     private TipoVinculo tipoVinculo     = TipoVinculo.PINO;
     private boolean     mostrarCores    = false;  // cores tração/compressão sem valores
+    private double      zoom            = 1.0;    // escala visual do plano cartesiano
 
     // Referência ao painel lateral
     private PainelLateral painelLateral;
@@ -44,7 +45,8 @@ public class PainelDesenho extends JPanel {
 
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override public void mouseMoved(MouseEvent e) {
-                mouseX = e.getX(); mouseY = e.getY();
+                mouseX = telaParaMundo(e.getX());
+                mouseY = telaParaMundo(e.getY());
                 noHover      = encontrarNo(mouseX, mouseY);
                 elementoHover = encontrarBarra(mouseX, mouseY);
                 repaint();
@@ -64,6 +66,15 @@ public class PainelDesenho extends JPanel {
     }
     public void setTipoVinculo(TipoVinculo t) { this.tipoVinculo = t; }
     public void setMostrarCores(boolean b) { mostrarCores = b; repaint(); }
+
+    public void aumentarZoom() { ajustarZoom(zoom * 1.2); }
+    public void diminuirZoom() { ajustarZoom(zoom / 1.2); }
+    public void resetarZoom()  { ajustarZoom(1.0); }
+
+    private void ajustarZoom(double novoZoom) {
+        zoom = Math.max(0.35, Math.min(3.0, novoZoom));
+        repaint();
+    }
 
     // -----------------------------------------------------------------------
     // Acesso aos dados para cálculo por componente
@@ -97,7 +108,7 @@ public class PainelDesenho extends JPanel {
     // Clique
     // -----------------------------------------------------------------------
     private void aoClicar(MouseEvent e) {
-        int x = e.getX(), y = e.getY();
+        int x = telaParaMundo(e.getX()), y = telaParaMundo(e.getY());
 
         switch (ferramenta) {
 
@@ -293,6 +304,7 @@ public class PainelDesenho extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2.scale(zoom, zoom);
 
         desenharGrid(g2);
         desenharBarras(g2);
@@ -305,8 +317,10 @@ public class PainelDesenho extends JPanel {
 
     private void desenharGrid(Graphics2D g) {
         g.setColor(new Color(235, 235, 245));
-        for (int x = 0; x < getWidth();  x += GRID) g.drawLine(x, 0, x, getHeight());
-        for (int y = 0; y < getHeight(); y += GRID) g.drawLine(0, y, getWidth(), y);
+        int larguraMundo = telaParaMundo(getWidth()) + GRID;
+        int alturaMundo = telaParaMundo(getHeight()) + GRID;
+        for (int x = 0; x < larguraMundo; x += GRID) g.drawLine(x, 0, x, alturaMundo);
+        for (int y = 0; y < alturaMundo; y += GRID) g.drawLine(0, y, larguraMundo, y);
         // Eixo X e Y em destaque
         g.setColor(new Color(200, 200, 215));
         g.setStroke(new BasicStroke(1));
@@ -477,6 +491,8 @@ public class PainelDesenho extends JPanel {
     // Geométricos
     // -----------------------------------------------------------------------
     private int snap(int v) { return Math.round((float)v/GRID)*GRID; }
+
+    private int telaParaMundo(int v) { return (int)Math.round(v / zoom); }
 
     /** Busca nó EXATAMENTE na posição de grade (sem tolerância de arredondamento). */
     private No encontrarNoNaGrade(int gx, int gy) {

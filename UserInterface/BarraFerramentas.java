@@ -50,6 +50,24 @@ public class BarraFerramentas extends JPanel {
 
         criarSep();
 
+        // Zoom do plano cartesiano 2D
+        JButton btnZoomMenos = new JButton("-");
+        estilizarBotaoAcao(btnZoomMenos, "Diminuir zoom do plano");
+        btnZoomMenos.addActionListener(e -> painel.diminuirZoom());
+        add(btnZoomMenos);
+
+        JButton btnZoomReset = new JButton("100%");
+        estilizarBotaoAcao(btnZoomReset, "Restaurar zoom do plano");
+        btnZoomReset.addActionListener(e -> painel.resetarZoom());
+        add(btnZoomReset);
+
+        JButton btnZoomMais = new JButton("+");
+        estilizarBotaoAcao(btnZoomMais, "Aumentar zoom do plano");
+        btnZoomMais.addActionListener(e -> painel.aumentarZoom());
+        add(btnZoomMais);
+
+        criarSep();
+
         //Calcular
         JButton btnCalc = new JButton("⚙ Calcular");
         btnCalc.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -92,6 +110,15 @@ public class BarraFerramentas extends JPanel {
         JSeparator s = new JSeparator(SwingConstants.VERTICAL);
         s.setPreferredSize(new Dimension(2, 32));
         add(s);
+    }
+
+    private void estilizarBotaoAcao(JButton b, String tooltip) {
+        b.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        b.setPreferredSize(new Dimension(58, 36));
+        b.setToolTipText(tooltip);
+        b.setFocusPainted(false);
+        b.setBorder(new LineBorder(new Color(190, 190, 200)));
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     private void selecionarFerramenta(Ferramenta f) {
