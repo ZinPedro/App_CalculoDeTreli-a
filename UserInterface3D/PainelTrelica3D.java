@@ -64,7 +64,7 @@ public class PainelTrelica3D extends JPanel {
         btnCalcular.setBackground(new Color(30, 120, 60));
         btnCalcular.setForeground(Color.WHITE);
 
-        btnExemplo.addActionListener(e -> carregarExemplo());
+        btnExemplo.addActionListener(e -> acionarExemplo(btnExemplo));
         btnLimpar.addActionListener(e -> limparTudo());
         btnRemover.addActionListener(e -> removerSelecionado());
         btnCalcular.addActionListener(e -> calcular());
@@ -242,6 +242,9 @@ public class PainelTrelica3D extends JPanel {
             "<p>Ao selecionar um nó, o painel Propriedades permite editar coordenadas, forças Fx/Fy/Fz " +
             "e restrições de vínculo em X/Y/Z. Quando existir vínculo, os campos Rx/Ry/Rz mostram as reações " +
             "e podem ser editados manualmente; ao calcular, o solver atualiza esses valores.</p>" +
+            "<h3>Configuração do vínculo</h3>" +
+            "<p>Ao selecionar um vínculo na lista Elementos, é possível alterar o nó, o tipo de apoio, " +
+            "e quais restrições X/Y/Z estão ativas.</p>" +
             "<h3>Remoção</h3>" +
             "<p>Use <b>Remover selecionado</b> para apagar o item ativo. Ao remover um nó, suas barras conectadas " +
             "e seu vínculo também são removidos. O botão <b>-</b> ao lado da entrada executa a mesma remoção.</p>" +
@@ -387,7 +390,7 @@ public class PainelTrelica3D extends JPanel {
         vinculo.rx = rx;
         vinculo.ry = ry;
         vinculo.rz = rz;
-        selecionado = nos.get(idNo);
+        selecionado = vinculo;
     }
 
     private NoItem noObrigatorio(int id) throws Exception {
@@ -517,6 +520,36 @@ public class PainelTrelica3D extends JPanel {
         }
     }
 
+    private void acionarExemplo(Component origem) {
+        if (estaVazio()) {
+            carregarExemplo();
+            return;
+        }
+
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem substituir = new JMenuItem("Substituir tudo pelo exemplo");
+        substituir.addActionListener(e -> confirmarCarregarExemplo());
+        menu.add(substituir);
+        menu.show(origem, 0, origem.getHeight());
+    }
+
+    private boolean estaVazio() {
+        return nos.isEmpty() && barras.isEmpty() && vinculos.isEmpty();
+    }
+
+    private void confirmarCarregarExemplo() {
+        int opcao = JOptionPane.showConfirmDialog(
+            this,
+            "Tudo será excluído para carregar o exemplo 3D. Continuar?",
+            "Carregar exemplo",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+        if (opcao == JOptionPane.YES_OPTION) {
+            carregarExemplo();
+        }
+    }
+
     private void carregarExemplo() {
         limparTudo();
         NoItem n1 = adicionarNo(0, 0, 0);
@@ -588,10 +621,18 @@ public class PainelTrelica3D extends JPanel {
         private JTextField campoReacaoX = campo();
         private JTextField campoReacaoY = campo();
         private JTextField campoReacaoZ = campo();
+        private JTextField campoVinculoNo = campo();
+        private JTextField campoVinculoReacaoX = campo();
+        private JTextField campoVinculoReacaoY = campo();
+        private JTextField campoVinculoReacaoZ = campo();
         private JCheckBox chkRx = new JCheckBox("Restringe X");
         private JCheckBox chkRy = new JCheckBox("Restringe Y");
         private JCheckBox chkRz = new JCheckBox("Restringe Z");
+        private JCheckBox chkVinculoRx = new JCheckBox("Restringe X");
+        private JCheckBox chkVinculoRy = new JCheckBox("Restringe Y");
+        private JCheckBox chkVinculoRz = new JCheckBox("Restringe Z");
         private JLabel tituloNo = new JLabel();
+        private JLabel tituloVinculo = new JLabel();
         private JLabel infoBarra = new JLabel();
         private boolean atualizandoCampos = false;
 
@@ -603,6 +644,7 @@ public class PainelTrelica3D extends JPanel {
             conteudo.add(criarVazio(), "vazio");
             conteudo.add(criarNo(), "no");
             conteudo.add(criarBarra(), "barra");
+            conteudo.add(criarVinculo(), "vinculo");
             add(conteudo, BorderLayout.CENTER);
             atualizar();
         }
@@ -615,7 +657,7 @@ public class PainelTrelica3D extends JPanel {
         }
 
         private JComponent criarVazio() {
-            JLabel msg = new JLabel("<html><center>Selecione um nó<br>ou barra no espaço 3D</center></html>", SwingConstants.CENTER);
+            JLabel msg = new JLabel("<html><center>Selecione um nó,<br>barra ou vínculo</center></html>", SwingConstants.CENTER);
             msg.setForeground(new Color(130, 130, 138));
             return msg;
         }
@@ -642,6 +684,9 @@ public class PainelTrelica3D extends JPanel {
             p.add(chkRz);
             p.add(separador());
             p.add(new JLabel("Reações do vínculo"));
+            configurarCampoResultado(campoReacaoX);
+            configurarCampoResultado(campoReacaoY);
+            configurarCampoResultado(campoReacaoZ);
             p.add(linha("Rx", campoReacaoX));
             p.add(linha("Ry", campoReacaoY));
             p.add(linha("Rz", campoReacaoZ));
@@ -657,9 +702,6 @@ public class PainelTrelica3D extends JPanel {
             campoFx.getDocument().addDocumentListener(listener);
             campoFy.getDocument().addDocumentListener(listener);
             campoFz.getDocument().addDocumentListener(listener);
-            campoReacaoX.getDocument().addDocumentListener(listener);
-            campoReacaoY.getDocument().addDocumentListener(listener);
-            campoReacaoZ.getDocument().addDocumentListener(listener);
             chkRx.addActionListener(e -> aplicarNoSelecionado());
             chkRy.addActionListener(e -> aplicarNoSelecionado());
             chkRz.addActionListener(e -> aplicarNoSelecionado());
@@ -674,10 +716,52 @@ public class PainelTrelica3D extends JPanel {
             return p;
         }
 
+        private JComponent criarVinculo() {
+            JPanel p = new JPanel();
+            p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+            p.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
+
+            tituloVinculo.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+
+            p.add(tituloVinculo);
+            p.add(Box.createVerticalStrut(10));
+            p.add(linha("Nó", campoVinculoNo));
+            p.add(Box.createVerticalStrut(8));
+            p.add(chkVinculoRx);
+            p.add(chkVinculoRy);
+            p.add(chkVinculoRz);
+            p.add(separador());
+            p.add(new JLabel("Reações calculadas"));
+            configurarCampoResultado(campoVinculoReacaoX);
+            configurarCampoResultado(campoVinculoReacaoY);
+            configurarCampoResultado(campoVinculoReacaoZ);
+            p.add(linha("Rx", campoVinculoReacaoX));
+            p.add(linha("Ry", campoVinculoReacaoY));
+            p.add(linha("Rz", campoVinculoReacaoZ));
+
+            DocumentListener listener = new DocumentListener() {
+                public void insertUpdate(DocumentEvent e) { aplicarVinculoSelecionado(); }
+                public void removeUpdate(DocumentEvent e) { aplicarVinculoSelecionado(); }
+                public void changedUpdate(DocumentEvent e) { aplicarVinculoSelecionado(); }
+            };
+            campoVinculoNo.getDocument().addDocumentListener(listener);
+            chkVinculoRx.addActionListener(e -> aplicarVinculoSelecionado());
+            chkVinculoRy.addActionListener(e -> aplicarVinculoSelecionado());
+            chkVinculoRz.addActionListener(e -> aplicarVinculoSelecionado());
+            return p;
+        }
+
         private JTextField campo() {
             JTextField c = new JTextField();
             c.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
             return c;
+        }
+
+        private void configurarCampoResultado(JTextField campo) {
+            campo.setEditable(false);
+            campo.setFocusable(false);
+            campo.setBackground(new Color(240, 242, 246));
+            campo.setForeground(new Color(70, 74, 84));
         }
 
         private JComponent linha(String rotulo, JTextField campo) {
@@ -728,6 +812,23 @@ public class PainelTrelica3D extends JPanel {
                         "<html><b>Barra %d</b><br><br>Nó inicial: %d<br>Nó final: %d<br><br>Força interna: %.3f N<br>Estado: %s</html>",
                         b.id, b.noA, b.noB, Math.abs(b.forcaInterna), tipo));
                     cards.show(conteudo, "barra");
+                } else if (selecionado instanceof VinculoItem) {
+                    VinculoItem v = (VinculoItem)selecionado;
+                    tituloVinculo.setText("Vínculo no nó " + v.noId);
+                    campoVinculoNo.setText(String.valueOf(v.noId));
+                    chkVinculoRx.setSelected(v.rx);
+                    chkVinculoRy.setSelected(v.ry);
+                    chkVinculoRz.setSelected(v.rz);
+                    setTexto(campoVinculoReacaoX, v.reacaoX);
+                    setTexto(campoVinculoReacaoY, v.reacaoY);
+                    setTexto(campoVinculoReacaoZ, v.reacaoZ);
+                    chkVinculoRx.setEnabled(true);
+                    chkVinculoRy.setEnabled(true);
+                    chkVinculoRz.setEnabled(true);
+                    campoVinculoReacaoX.setEnabled(true);
+                    campoVinculoReacaoY.setEnabled(true);
+                    campoVinculoReacaoZ.setEnabled(true);
+                    cards.show(conteudo, "vinculo");
                 } else {
                     cards.show(conteudo, "vazio");
                 }
@@ -762,12 +863,33 @@ public class PainelTrelica3D extends JPanel {
                     v.rx = chkRx.isSelected();
                     v.ry = chkRy.isSelected();
                     v.rz = chkRz.isSelected();
-                    v.reacaoX = Double.parseDouble(campoReacaoX.getText().replace(",", "."));
-                    v.reacaoY = Double.parseDouble(campoReacaoY.getText().replace(",", "."));
-                    v.reacaoZ = Double.parseDouble(campoReacaoZ.getText().replace(",", "."));
                 } else {
                     vinculos.remove(no.id);
                 }
+                atualizarAlgebra();
+                espaco3D.repaint();
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        private void aplicarVinculoSelecionado() {
+            if (atualizandoCampos) return;
+            if (!(selecionado instanceof VinculoItem)) return;
+            try {
+                VinculoItem vinculo = (VinculoItem)selecionado;
+                int novoNoId = Integer.parseInt(campoVinculoNo.getText().trim());
+                if (!nos.containsKey(novoNoId)) return;
+
+                if (novoNoId != vinculo.noId) {
+                    vinculos.remove(vinculo.noId);
+                    vinculo.noId = novoNoId;
+                    vinculos.put(vinculo.noId, vinculo);
+                }
+
+                vinculo.rx = chkVinculoRx.isSelected();
+                vinculo.ry = chkVinculoRy.isSelected();
+                vinculo.rz = chkVinculoRz.isSelected();
+
                 atualizarAlgebra();
                 espaco3D.repaint();
             } catch (NumberFormatException ignored) {

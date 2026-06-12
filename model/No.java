@@ -26,6 +26,18 @@ public class No {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public static void resetarContador() {
+        contador = 0;
+    }
+
+    public static void definirProximoId(int proximoId) {
+        contador = Math.max(0, proximoId);
+    }
+
     public double getX() {
         return x;
     }

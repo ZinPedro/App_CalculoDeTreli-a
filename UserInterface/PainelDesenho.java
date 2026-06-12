@@ -29,6 +29,7 @@ public class PainelDesenho extends JPanel {
 
     private Ferramenta  ferramenta      = Ferramenta.DESENHAR_BARRA;
     private TipoVinculo tipoVinculo     = TipoVinculo.PINO;
+    private double      anguloVinculo   = 0;
     private boolean     mostrarCores    = false;  // cores tração/compressão sem valores
     private double      zoom            = 1.0;    // escala visual do plano cartesiano
 
@@ -65,6 +66,7 @@ public class PainelDesenho extends JPanel {
         repaint();
     }
     public void setTipoVinculo(TipoVinculo t) { this.tipoVinculo = t; }
+    public void setAnguloVinculo(double angulo) { this.anguloVinculo = angulo; }
     public void setMostrarCores(boolean b) { mostrarCores = b; repaint(); }
 
     public void aumentarZoom() { ajustarZoom(zoom * 1.2); }
@@ -73,6 +75,22 @@ public class PainelDesenho extends JPanel {
 
     private void ajustarZoom(double novoZoom) {
         zoom = Math.max(0.35, Math.min(3.0, novoZoom));
+        repaint();
+    }
+
+    public void limparTudo() {
+        todosNos.clear();
+        todosElementos.clear();
+        todosVinculos.clear();
+
+        noSelecionado = null;
+        noHover = null;
+        elementoHover = null;
+        noAtivo = null;
+        barraAtiva = null;
+
+        No.resetarContador();
+        if (painelLateral != null) painelLateral.limparSelecao();
         repaint();
     }
 
@@ -219,7 +237,19 @@ public class PainelDesenho extends JPanel {
         todosElementos.removeIf(e -> e.getNoInicial()==no || e.getNoFinal()==no);
         todosVinculos.removeIf(v -> v.getNo()==no);
         todosNos.remove(no);
-        if (noAtivo == no) { noAtivo = null; if (painelLateral!=null) painelLateral.limparSelecao(); }
+        if (noSelecionado == no) noSelecionado = null;
+        if (noHover == no) noHover = null;
+        boolean barraAtivaRemovida = false;
+        if (barraAtiva != null && (barraAtiva.getNoInicial() == no || barraAtiva.getNoFinal() == no)) {
+            barraAtiva = null;
+            barraAtivaRemovida = true;
+        }
+        if (elementoHover != null && (elementoHover.getNoInicial() == no || elementoHover.getNoFinal() == no)) {
+            elementoHover = null;
+        }
+        renumerarNos();
+        if (noAtivo == no || barraAtivaRemovida) { noAtivo = null; if (painelLateral!=null) painelLateral.limparSelecao(); }
+        else if (painelLateral != null && noAtivo != null) painelLateral.atualizarPainelNo();
     }
 
     private void apagarBarra(int x, int y) {
@@ -240,8 +270,9 @@ public class PainelDesenho extends JPanel {
             no = new No(gx, gy);
             todosNos.add(no);
         }
-        for (Vinculo v : todosVinculos) if (v.getNo()==no) return; // já tem
-        todosVinculos.add(new Vinculo(no, tipoVinculo));
+        final No noVinculado = no;
+        todosVinculos.removeIf(v -> v.getNo() == noVinculado);
+        todosVinculos.add(new Vinculo(noVinculado, tipoVinculo, anguloVinculo));
     }
 
     private void apagarVinculo(int x, int y) {
@@ -414,7 +445,7 @@ public class PainelDesenho extends JPanel {
                 // Pino central
                 g.setColor(new Color(200, 200, 200));
                 g.fillOval(x-3, y-3, 6, 6);
-            } else {
+            } else if (v.getTipo() == TipoVinculo.ROLETE) {
                 int t = 11;
                 int[] xs = {x-t, x+t, x}, ys = {y+t, y+t, y};
                 g.fillPolygon(xs, ys, 3);
@@ -426,6 +457,31 @@ public class PainelDesenho extends JPanel {
                 g.drawOval(x-t+2, y+t, 8, 8);
                 g.drawOval(x+t-9, y+t, 8, 8);
                 g.drawLine(x-t-4, y+t+9, x+t+4, y+t+9);
+            } else if (v.getTipo() == TipoVinculo.ROLETE_HORIZONTAL) {
+                int t = 11;
+                int[] xs = {x-t, x-t, x}, ys = {y-t, y+t, y};
+                g.fillPolygon(xs, ys, 3);
+                g.setColor(Color.WHITE);
+                g.drawPolygon(xs, ys, 3);
+                g.setColor(new Color(50,50,60));
+                g.setStroke(new BasicStroke(1.5f));
+                g.drawOval(x-t-8, y-t+2, 8, 8);
+                g.drawOval(x-t-8, y+t-9, 8, 8);
+                g.drawLine(x-t-9, y-t-4, x-t-9, y+t+4);
+            } else {
+                double rad = Math.toRadians(v.getAnguloGraus());
+                int x2 = x + (int)Math.round(Math.cos(rad) * 26);
+                int y2 = y - (int)Math.round(Math.sin(rad) * 26);
+                int bx1 = x - (int)Math.round(Math.sin(rad) * 12);
+                int by1 = y - (int)Math.round(Math.cos(rad) * 12);
+                int bx2 = x + (int)Math.round(Math.sin(rad) * 12);
+                int by2 = y + (int)Math.round(Math.cos(rad) * 12);
+
+                g.setStroke(new BasicStroke(2));
+                g.drawLine(x, y, x2, y2);
+                g.drawLine(bx1, by1, bx2, by2);
+                g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+                g.drawString(String.format("%.0f°", v.getAnguloGraus()), x2 + 4, y2 - 4);
             }
             g.setStroke(new BasicStroke(1));
 
@@ -562,6 +618,14 @@ public class PainelDesenho extends JPanel {
                 dividirBarra(e, novoNo);
             }
         }
+    }
+
+    private void renumerarNos() {
+        todosNos.sort(Comparator.comparingInt(No::getId));
+        for (int i = 0; i < todosNos.size(); i++) {
+            todosNos.get(i).setId(i);
+        }
+        No.definirProximoId(todosNos.size());
     }
 
     private Point intersecao(Elemento e1, Elemento e2) {

@@ -1,7 +1,6 @@
 package solver;
 
 import model.*;
-import enums.TipoVinculo;
 import java.util.List;
 
 /*
@@ -49,7 +48,7 @@ public class CalculadoraTrelica {
     public int contarReacoes(List<Vinculo> vinculos){
         int r = 0;
         for (Vinculo v : vinculos){
-            r += (v.getTipo() == TipoVinculo.PINO) ? 2 : 1;
+            r += v.contarReacoes();
         }
         return r;
     }
@@ -89,18 +88,17 @@ public class CalculadoraTrelica {
         int col = m;
         for(Vinculo v : vinculos){
             int i = nos.indexOf(v.getNo());
-            if(v.getTipo() == TipoVinculo.PINO){
-                A[2*i][col++] = 1;
-                A[2*i+1][col++] = 1;
-            }else{
-                A[2*i+1][col++] = 1;
+            for (double[] direcao : v.getDirecoesReacao()) {
+                A[2*i][col] = direcao[0];
+                A[2*i+1][col] = direcao[1];
+                col++;
             }
         }
 
         for(int i = 0; i < n; i++){
             No no = nos.get(i);
             b[2*i] = -no.getFx();
-            b[2*i+1] = no.getFy();
+            b[2*i+1] = -no.getFy();
         }
 
         double[] x;
@@ -117,12 +115,9 @@ public class CalculadoraTrelica {
 
         int idx = m;
         for(Vinculo v : vinculos){
-            if(v.getTipo() == TipoVinculo.PINO){
-                v.setReacaoX(x[idx++]);
-                v.setReacaoY(x[idx++]);
-            }else{
-                v.setReacaoX(0);
-                v.setReacaoY(x[idx++]);
+            v.limparReacoes();
+            for (double[] direcao : v.getDirecoesReacao()) {
+                v.adicionarReacao(x[idx++], direcao);
             }
         }
 
@@ -154,8 +149,12 @@ public class CalculadoraTrelica {
 
         sb.append("\n▶ REAÇÕES DE APOIO\n");
         for (Vinculo v : vinculos) {
+            String tipo = v.getTipo().toString();
+            if (v.getTipo() == enums.TipoVinculo.PINO_ANGULADO) {
+                tipo += String.format("(%.1f°)", v.getAnguloGraus());
+            }
             sb.append(String.format("  %s  Nó %d   Rx=%.3f N   Ry=%.3f N%n",
-                v.getTipo(), v.getNo().getId(), v.getReacaoX(), v.getReacaoY()));
+                tipo, v.getNo().getId(), v.getReacaoX(), v.getReacaoY()));
         }
         sb.append("\n══════════════════════════════════════\n");
         return sb.toString();

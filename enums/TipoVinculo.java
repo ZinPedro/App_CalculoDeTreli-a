@@ -2,5 +2,7 @@ package enums;
 
 public enum TipoVinculo {
     PINO,
-    ROLETE
+    ROLETE,
+    ROLETE_HORIZONTAL,
+    PINO_ANGULADO
 }
