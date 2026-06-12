@@ -4,6 +4,7 @@ import enums.Ferramenta;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,12 +79,7 @@ public class BarraFerramentas extends JPanel {
 
         //Calcular
         JButton btnCalc = new JButton("⚙ Calcular");
-        btnCalc.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        btnCalc.setPreferredSize(new Dimension(100, 36));
-        btnCalc.setBackground(new Color(30, 120, 60));
-        btnCalc.setForeground(Color.WHITE);
-        btnCalc.setFocusPainted(false);
-        btnCalc.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        estilizarBotaoPrincipal(btnCalc, new Dimension(100, 36));
         btnCalc.setToolTipText("Calcular treliça do elemento selecionado");
         btnCalc.addActionListener(e -> painel.calcular());
         add(btnCalc);
@@ -126,6 +122,22 @@ public class BarraFerramentas extends JPanel {
         b.setToolTipText(tooltip);
         b.setFocusPainted(false);
         b.setBorder(new LineBorder(new Color(190, 190, 200)));
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
+
+    private void estilizarBotaoPrincipal(JButton b, Dimension tamanho) {
+        b.setUI(new BasicButtonUI());
+        b.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        b.setPreferredSize(tamanho);
+        b.setBackground(new Color(30, 120, 60));
+        b.setForeground(Color.WHITE);
+        b.setOpaque(true);
+        b.setContentAreaFilled(true);
+        b.setBorderPainted(true);
+        b.setFocusPainted(false);
+        b.setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(new Color(20, 90, 45)),
+            BorderFactory.createEmptyBorder(0, 12, 0, 12)));
         b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
