@@ -9,6 +9,8 @@ import solver3d.CalculadoraTrelica3D;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -61,8 +63,7 @@ public class PainelTrelica3D extends JPanel {
         JButton btnCalcular = criarBotao("Calcular", "Resolver a trelica espacial");
         JButton btnVista = criarBotao("Centralizar", "Centralizar a vista 3D");
         JButton btnAjuda = criarBotao("Ajuda", "Mostrar ajuda do modo 3D");
-        btnCalcular.setBackground(new Color(30, 120, 60));
-        btnCalcular.setForeground(Color.WHITE);
+        estilizarBotaoPrincipal(btnCalcular);
 
         btnExemplo.addActionListener(e -> acionarExemplo(btnExemplo));
         btnLimpar.addActionListener(e -> limparTudo());
@@ -190,6 +191,21 @@ public class PainelTrelica3D extends JPanel {
         botao.setFocusPainted(false);
         botao.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return botao;
+    }
+
+    private void estilizarBotaoPrincipal(JButton botao) {
+        botao.setUI(new BasicButtonUI());
+        botao.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        botao.setBackground(new Color(30, 120, 60));
+        botao.setForeground(Color.WHITE);
+        botao.setOpaque(true);
+        botao.setContentAreaFilled(true);
+        botao.setBorderPainted(true);
+        botao.setFocusPainted(false);
+        botao.setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(new Color(20, 90, 45)),
+            BorderFactory.createEmptyBorder(0, 12, 0, 12)));
+        botao.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     private void mostrarMenuAdicionar(Component origem) {
