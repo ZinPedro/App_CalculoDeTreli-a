@@ -252,6 +252,22 @@ p {
   color: var(--muted);
 }
 
+.download-card .download-note {
+  padding: 0.72rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  color: #1e3a8a;
+  background: #eff6ff;
+  font-size: 0.92rem;
+}
+
+.download-card .download-note a {
+  color: #1d4ed8;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .download-card .button,
 .download-card .status {
   margin-top: auto;
