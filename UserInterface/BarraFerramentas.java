@@ -236,7 +236,7 @@ public class BarraFerramentas extends JPanel {
             "<p>A treliça precisa satisfazer: <b>m + r = 2n</b></p>" +
             "<ul>" +
             "<li><b>m</b> = número de barras</li>" +
-            "<li><b>r</b> = número de reações (Pino = 2; Rolete vertical/horizontal e Pino angulado = 1)</li>" +
+            "<li><b>r</b> = número de reações (Pino = 2; Rolete vertical/horizontal = 1; Pino angulado depende dos componentes ativos)</li>" +
             "<li><b>n</b> = número de nós</li>" +
             "</ul>" +
             "<p><b>Exemplo:</b> treliça simples com 3 nós (n=3), 3 barras (m=3), 1 pino + 1 rolete (r=3):<br>" +

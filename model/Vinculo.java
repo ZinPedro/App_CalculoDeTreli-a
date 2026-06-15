@@ -34,7 +34,7 @@ public class Vinculo {
     }
 
     public int contarReacoes() {
-        return tipo == TipoVinculo.PINO ? 2 : 1;
+        return getDirecoesReacao().length;
     }
 
     public double[][] getDirecoesReacao() {
@@ -45,10 +45,26 @@ public class Vinculo {
             return new double[][] {{1, 0}};
         }
         if (tipo == TipoVinculo.PINO_ANGULADO) {
-            double rad = Math.toRadians(anguloGraus);
-            return new double[][] {{Math.cos(rad), Math.sin(rad)}};
+            return direcoesPinoAngulado();
         }
         return new double[][] {{0, 1}};
+    }
+
+    private double[][] direcoesPinoAngulado() {
+        double rad = Math.toRadians(anguloGraus);
+        boolean possuiX = Math.abs(Math.cos(rad)) > 1e-9;
+        boolean possuiY = Math.abs(Math.sin(rad)) > 1e-9;
+
+        if (possuiX && possuiY) {
+            return new double[][] {{1, 0}, {0, 1}};
+        }
+        if (possuiX) {
+            return new double[][] {{1, 0}};
+        }
+        if (possuiY) {
+            return new double[][] {{0, 1}};
+        }
+        return new double[0][2];
     }
 
     public double getReacaoX() {

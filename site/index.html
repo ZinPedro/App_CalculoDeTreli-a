@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de Treliças | Aplicativo 2D e 3D</title>
+  <meta name="description" content="Site institucional da Calculadora de Treliças, aplicativo Java para modelagem e cálculo de treliças 2D e 3D.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Calculadora de Treliças">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Calculadora de Treliças</span>
+    </a>
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="#downloads">Downloads</a>
+      <a href="#projeto">Projeto</a>
+      <a href="#codigo">Código</a>
+      <a href="#metodo">Método</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-content">
+        <p class="eyebrow">Aplicativo Java para engenharia estrutural</p>
+        <h1>Modelagem e cálculo de treliças 2D e 3D</h1>
+        <p class="lead">
+          A Calculadora de Treliças permite criar nós, barras, vínculos e forças aplicadas para obter forças internas,
+          reações de apoio e a classificação dos elementos em tração, compressão ou força nula.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#downloads">Baixar aplicativo</a>
+          <a class="button secondary" href="#metodo">Ver método de cálculo</a>
+        </div>
+      </div>
+      <div class="hero-visual" aria-label="Ilustração técnica de treliça">
+        <svg viewBox="0 0 640 420" role="img" aria-labelledby="svgTitle svgDesc">
+          <title id="svgTitle">Estrutura triangulada com nós e barras</title>
+          <desc id="svgDesc">Diagrama técnico com barras trianguladas, nós e pontos de apoio.</desc>
+          <defs>
+            <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#d9e0e8" stroke-width="1"/>
+            </pattern>
+            <linearGradient id="beam" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#17324d"/>
+              <stop offset="1" stop-color="#2f6f73"/>
+            </linearGradient>
+          </defs>
+          <rect width="640" height="420" rx="18" fill="#f8fafc"/>
+          <rect x="0" y="0" width="640" height="420" fill="url(#grid)" opacity="0.8"/>
+          <path d="M70 330 L560 330 M120 285 L510 285 M170 240 L460 240" stroke="#d2dbe4" stroke-width="2"/>
+          <g stroke="url(#beam)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M95 310 L210 170 L325 310 L440 170 L555 310"/>
+            <path d="M95 310 L325 310 L555 310"/>
+            <path d="M210 170 L440 170"/>
+            <path d="M210 170 L325 310 L440 170"/>
+          </g>
+          <g fill="#f97316" stroke="#ffffff" stroke-width="5">
+            <circle cx="95" cy="310" r="13"/>
+            <circle cx="210" cy="170" r="13"/>
+            <circle cx="325" cy="310" r="13"/>
+            <circle cx="440" cy="170" r="13"/>
+            <circle cx="555" cy="310" r="13"/>
+          </g>
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M88 338 L555 338" stroke="#93a4b7" stroke-width="2" stroke-dasharray="8 10"/>
+            <path d="M92 348 L114 330 L136 348" stroke="#1f3a54" stroke-width="3"/>
+            <path d="M533 348 L555 330 L577 348" stroke="#1f3a54" stroke-width="3"/>
+            <path d="M210 170 L210 122 M440 170 L440 122" stroke="#f97316" stroke-width="3"/>
+            <path d="M198 122 L222 122 M428 122 L452 122" stroke="#f97316" stroke-width="3"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="downloads section" id="downloads" aria-labelledby="downloads-title">
+      <div class="section-heading">
+        <p class="eyebrow">Downloads</p>
+        <h2 id="downloads-title">Baixe o aplicativo</h2>
+        <p>Os pacotes são distribuídos em `.zip`. O pacote Linux real foi encontrado e copiado para o site; Windows e macOS ficam preparados para receber os arquivos gerados nas respectivas plataformas.</p>
+      </div>
+
+      <div class="download-grid">
+        <article class="download-card pending">
+          <div class="platform-icon" aria-hidden="true">⊞</div>
+          <h3>Windows</h3>
+          <p>Arquivo esperado: <code>CalculadoraTrelicas-windows.zip</code></p>
+          <span class="status">ZIP ainda não encontrado</span>
+        </article>
+
+        <article class="download-card available">
+          <div class="platform-icon" aria-hidden="true">⌘</div>
+          <h3>Linux</h3>
+          <p>Pacote gerado com `jpackage`, incluindo runtime Java para execução local.</p>
+          <a class="button download" href="downloads/CalculadoraTrelicas-linux.zip" download>Baixar Linux .zip</a>
+        </article>
+
+        <article class="download-card pending">
+          <div class="platform-icon" aria-hidden="true">◐</div>
+          <h3>macOS</h3>
+          <p>Arquivo esperado: <code>CalculadoraTrelicas-macos.zip</code></p>
+          <span class="status">ZIP ainda não encontrado</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="section overview" id="projeto">
+      <div class="section-heading">
+        <p class="eyebrow">Visão geral</p>
+        <h2>Um editor para estudo e validação de treliças</h2>
+      </div>
+      <div class="feature-grid">
+        <article>
+          <h3>Modelagem estrutural</h3>
+          <p>O aplicativo trabalha com nós, barras ou elementos, vínculos/apoios e forças aplicadas. Cada estrutura é montada a partir desses componentes, permitindo representar geometrias simples de treliças planas e espaciais.</p>
+        </article>
+        <article>
+          <h3>Editor 2D</h3>
+          <p>No modo 2D, o usuário desenha no plano cartesiano com grade, cria barras por cliques, adiciona vínculos, edita forças no painel lateral e visualiza os resultados na própria estrutura.</p>
+        </article>
+        <article>
+          <h3>Editor 3D</h3>
+          <p>No modo 3D, os elementos são criados por argumentos, como <code>No(x,y,z)</code>, <code>Barra(noA,noB)</code> e <code>Vinculo(no,rx,ry,rz)</code>, com navegação espacial por mouse.</p>
+        </article>
+      </div>
+      <div class="detail-panel">
+        <h3>O que a calculadora entrega</h3>
+        <p>
+          Após a montagem da estrutura, o sistema organiza as equações de equilíbrio dos nós, resolve o sistema linear
+          e apresenta um relatório com forças internas, reações de apoio e estado de cada barra. A classificação ajuda
+          o estudante a identificar rapidamente quais elementos trabalham à tração, à compressão ou com força nula.
+        </p>
+      </div>
+    </section>
+
+    <section class="section flow" id="funcionamento">
+      <div class="section-heading">
+        <p class="eyebrow">Funcionamento</p>
+        <h2>Fluxo de uso do aplicativo</h2>
+      </div>
+      <ol class="timeline">
+        <li><span>1</span><p>O usuário cria os nós da estrutura.</p></li>
+        <li><span>2</span><p>Liga os nós com barras ou elementos estruturais.</p></li>
+        <li><span>3</span><p>Define apoios e vínculos, como pino, rolete e restrições direcionais.</p></li>
+        <li><span>4</span><p>Aplica forças externas nos nós.</p></li>
+        <li><span>5</span><p>Executa o cálculo matricial.</p></li>
+        <li><span>6</span><p>Analisa forças internas, reações e classificação de cada barra.</p></li>
+      </ol>
+      <div class="workflow-detail">
+        <article>
+          <h3>Entrada dos dados</h3>
+          <p>
+            No modo 2D, a criação é visual: cliques no plano definem nós e barras. No modo 3D, a entrada é baseada em
+            comandos com argumentos, o que favorece precisão numérica para coordenadas espaciais.
+          </p>
+        </article>
+        <article>
+          <h3>Leitura dos resultados</h3>
+          <p>
+            O relatório separa forças nas barras, forças externas e reações. Valores positivos de força interna indicam
+            tração; valores negativos indicam compressão; valores próximos de zero indicam barras sem esforço relevante.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section planning">
+      <div class="section-heading">
+        <p class="eyebrow">Planejamento</p>
+        <h2>Objetivo acadêmico e etapas do desenvolvimento</h2>
+      </div>
+      <div class="planning-grid">
+        <article><h3>Levantamento</h3><p>Identificação do problema estrutural e das entradas necessárias para representar uma treliça.</p></article>
+        <article><h3>Modelagem</h3><p>Criação das classes de nós, barras, vínculos e forças para representar o sistema.</p></article>
+        <article><h3>Interface</h3><p>Construção do editor Swing 2D, painel lateral, ferramentas de desenho e modo 3D.</p></article>
+        <article><h3>Solver</h3><p>Implementação da montagem matricial e resolução por sistema linear.</p></article>
+        <article><h3>Validação</h3><p>Mensagens para estruturas não isostáticas e detecção de sistemas singulares.</p></article>
+        <article><h3>Distribuição</h3><p>Script `jpackage` para gerar pacote Linux compartilhável.</p></article>
+      </div>
+    </section>
+
+    <section class="section code" id="codigo">
+      <div class="section-heading">
+        <p class="eyebrow">Arquitetura</p>
+        <h2>Estrutura real do código Java</h2>
+      </div>
+      <div class="code-layout">
+        <div class="package-list">
+          <h3>Pacotes principais</h3>
+          <ul>
+            <li><code>app</code>: classe `Main`, ponto de entrada Swing.</li>
+            <li><code>model</code>: `Trelica`, `No`, `Elemento`, `Vinculo` e `Forca` para o modo 2D.</li>
+            <li><code>model3d</code>: `Trelica3D`, `No3D`, `Elemento3D` e `Vinculo3D`.</li>
+            <li><code>solver</code>: `CalculadoraTrelica` e `SistemaLinearSolver`.</li>
+            <li><code>solver3d</code>: `CalculadoraTrelica3D`.</li>
+            <li><code>UserInterface</code>: janela principal, barra de ferramentas, painel de desenho e painel lateral.</li>
+            <li><code>UserInterface3D</code>: painel de visualização e entrada para treliças espaciais.</li>
+            <li><code>enums</code>: ferramentas e tipos de vínculo.</li>
+            <li><code>scripts</code>: script de empacotamento Linux com `jpackage`.</li>
+          </ul>
+        </div>
+        <div class="class-cards">
+          <article><h3>Main</h3><p>Inicializa o Swing com `SwingUtilities.invokeLater` e abre `MainFrame`.</p></article>
+          <article><h3>Trelica / Trelica3D</h3><p>Guardam listas de nós, elementos e vínculos usados pelo cálculo.</p></article>
+          <article><h3>No / No3D</h3><p>Armazenam coordenadas e componentes de força externa.</p></article>
+          <article><h3>Elemento / Elemento3D</h3><p>Representam barras e calculam comprimento e cossenos diretores.</p></article>
+          <article><h3>Vinculo / Vinculo3D</h3><p>Representam restrições e armazenam reações calculadas.</p></article>
+          <article><h3>Calculadoras</h3><p>Montam a matriz de equilíbrio, chamam o solver linear e geram relatórios.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section method" id="metodo">
+      <div class="section-heading">
+        <p class="eyebrow">Método de cálculo</p>
+        <h2>Equilíbrio estático em forma matricial</h2>
+      </div>
+      <div class="method-grid">
+        <article>
+          <h3>Treliças 2D</h3>
+          <p>Cada nó gera duas equações de equilíbrio: <strong>ΣFx = 0</strong> e <strong>ΣFy = 0</strong>. As barras entram na matriz por meio dos cossenos diretores e as reações de apoio entram como incógnitas.</p>
+          <p>A validação de isostaticidade usa <code>m + r = 2n</code>, onde <code>m</code> é o número de barras, <code>r</code> é o número de reações e <code>n</code> é o número de nós.</p>
+        </article>
+        <article>
+          <h3>Treliças 3D</h3>
+          <p>No modo 3D, cada nó gera três equações: <strong>ΣFx = 0</strong>, <strong>ΣFy = 0</strong> e <strong>ΣFz = 0</strong>. A condição implementada é <code>m + r = 3n</code>.</p>
+          <p>As barras espaciais usam os cossenos diretores <code>cx</code>, <code>cy</code> e <code>cz</code>.</p>
+        </article>
+        <article>
+          <h3>Solução numérica</h3>
+          <p>O `SistemaLinearSolver` resolve o sistema por eliminação de Gauss-Jordan com pivotamento parcial. Sistemas singulares são tratados como estruturas instáveis ou inválidas.</p>
+          <p>Força interna positiva indica tração; negativa indica compressão; valores próximos de zero indicam força nula.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section interface">
+      <div class="section-heading">
+        <p class="eyebrow">Interface</p>
+        <h2>Experiência de uso</h2>
+      </div>
+      <div class="interface-grid">
+        <article><h3>Editor 2D</h3><p>Ferramentas para selecionar, desenhar barras, apagar nós/barras, criar vínculos, inserir forças e calcular.</p></article>
+        <article><h3>Zoom e cores</h3><p>O plano 2D possui controles de zoom e visualização por cores para tração e compressão.</p></article>
+        <article><h3>Modo 3D</h3><p>O modo espacial permite criar elementos por argumentos, selecionar objetos, configurar propriedades e navegar no plano 3D.</p></article>
+        <article><h3>Relatórios</h3><p>Os resultados são apresentados em painel/diálogo com forças nas barras, forças externas e reações de apoio.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Calculadora de Treliças — projeto acadêmico para estudo de Mecânica dos Sólidos, Estática e Resistência dos Materiais.</p>
+    <a href="#inicio">Voltar ao topo</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
