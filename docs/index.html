@@ -79,7 +79,7 @@
       <div class="section-heading">
         <p class="eyebrow">Downloads</p>
         <h2 id="downloads-title">Baixe o aplicativo</h2>
-        <p>Os pacotes são distribuídos em `.zip`. Windows e Linux estão disponíveis para download; macOS fica preparado para receber o arquivo gerado na plataforma correspondente.</p>
+        <p>Os pacotes são distribuídos em `.zip` e incluem os arquivos necessários para execução local em cada plataforma.</p>
       </div>
 
       <div class="download-grid">
@@ -108,11 +108,16 @@
           <a class="button download" href="downloads/CalculadoraTrelicas-linux.zip" download>Baixar Linux .zip</a>
         </article>
 
-        <article class="download-card pending">
+        <article class="download-card available">
           <div class="platform-icon" aria-hidden="true">◐</div>
           <h3>macOS</h3>
-          <p>Arquivo esperado: <code>CalculadoraTrelicas-macos.zip</code></p>
-          <span class="status">ZIP ainda não encontrado</span>
+          <p>Pacote `.app` compactado em ZIP, incluindo runtime Java para execução local.</p>
+          <p class="download-note">
+            Após baixar, extraia o ZIP e abra <code>App_CalculoDeTrelica.app</code>.
+            Se o macOS bloquear a abertura, clique com o botão direito no aplicativo,
+            escolha <strong>Abrir</strong> e confirme a execução.
+          </p>
+          <a class="button download" href="downloads/CalculadoraTrelicas-macos.zip" download>Baixar macOS .zip</a>
         </article>
       </div>
     </section>
